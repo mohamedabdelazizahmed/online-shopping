@@ -1,0 +1,69 @@
+const http = require('http');
+const fs = require('fs');
+
+
+const server = http.createServer((req, res)=>{
+    console.log(req.url , req.method ,req.headers);
+    // process.exit();
+    
+    const url = req.url;
+    const method = req.method;
+    if(url === '/')
+    {
+        res.setHeader('Content-Type','text/html') // allow to set new header && type of content HTML 
+        res.write('<html>') //write some data in response
+        res.write('<head></head>')
+        res.write('<body><form  method="POST"   action="/message"><input type="text" name="message"/> <button type="submit"></button> </form></body>')
+        res.write('</html>');
+        return res.end(); // to write in response any more        
+    }
+    if(url ==='/message' && method === 'POST')
+    {
+        const body = [];
+        /* Streams & Buffers*/
+        // on => listen event in nodejs
+        // dataEvent fire when new chunk is ready used
+        req.on('data',(chunk) => {
+                console.log(chunk);
+                body.push(chunk)
+        });
+        return  req.on('end',(chunk) => {
+             const parsedBody = Buffer.concat(body).toString();
+            console.log(parsedBody);
+            const message = parsedBody.split('=')[1];
+            /**
+             *  Once message.txt is created done ...
+             */
+            fs.writeFile('message.txt' ,message ,err => {
+                res.statsCode = 302 ;
+                res.setHeader('Location','/');
+                return res.end();
+            });
+            // fs.writeFileSync('message.txt' ,message);
+            // fs.writeFileSync('message.txt' ,'DUMMY');
+            // res.statsCode = 302 ;
+            // res.setHeader('Location','/');
+            // return res.end();
+        });
+            // fs.writeFileSync('message.txt' ,message);
+            // fs.writeFileSync('message.txt' ,'DUMMY');
+            // res.statsCode = 302 ;
+            // res.setHeader('Location','/');
+            // return res.end();
+    }
+    
+    res.setHeader('Content-Type','text/html') // allow to set new header && type of content HTML 
+    res.write('<html>') //write some data in response
+    res.write('<head></head>')
+    res.write('<body><h1>Hello world</h1></body>')
+    res.write('</html>');
+    res.end(); // to write in response any more
+});
+server.listen(3000);
+app.js > node.js
+
+/**
+ * 04- Debugging 
+ *  in  package-lock.json  => way just stories the exact versions  i installed today so 
+ *  to share with other can actually get these extact vsrsions to instead of the latest version
+ */

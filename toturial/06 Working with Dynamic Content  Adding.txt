@@ -1,0 +1,63 @@
+06 Working with Dynamic Content  Adding Templating Engines
+////////////////////////////////////////////////////////////
+077 Sharing Data Across Requests  Users
+//////////////////////////////////////////
+# shop.js
+------------
+const path  =  require('path');
+const express = require('express');
+const rootDir = require('../util/path');
+const adminData = require('./admin')
+const router = express.Router();
+
+// Adding middleware
+router.get('/' , (req ,res , next)=>{
+    console.log(adminData.products);
+    // up in the shop.js file to  
+    res.sendFile(path.join(__dirname,'../' ,'views' ,'shop.html')); '/user/products' or '\user\products' 
+})
+
+
+module.exports = router;
+--------------------------------------------------------------------
+admin.js
+------------
+const express = require('express');
+// many express app can  export router and can use , get ,post
+const router = express.Router();
+const products = [];
+
+app.get('/add-product ',(req ,res , next)=>{
+    console.log('In another the middleware');
+    products.push([{title: req.body.title }])
+    res.redirect('/');
+})
+
+app.post('/product',(req ,res , next)=>{
+    console.log(req.body);
+    res.redirect('/');
+
+})
+
+module.exports = router;
+module.exports = products;
+--------------------------------------------------------------------------------
+# app.js
+------------
+const express = require('express');
+const bodyParser = require('body-parser');
+const adminData = require('./router/admin');
+const shopRouter = require('./router/shop');
+
+const  app =  express();
+
+// using parser incoming request body 
+app.use(bodyParser.urlencoded())
+//  to set valid middleware
+app.use('/admin' , adminData.router);
+app.use(shopRouter);
+
+app.use((req ,res, next) =>{
+    res.status(404).send('<h1> Page not found </h1>');
+})
+app.listen(3000);

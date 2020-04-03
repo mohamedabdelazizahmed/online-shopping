@@ -1,0 +1,136 @@
+
+> npm install --save  express
+> npm install --save  body-parser
+
+# app.js
+------------
+const express = require('express');
+const bodyParser = require('body-parser');
+
+
+const  app =  express();
+
+// using parser incoming request body 
+app.use(bodyParser.urlencoded())
+
+
+// Adding middleware
+app.use('/' , (req ,res , next)=>{
+    console.log('In the middleware');
+    // next(); // Allows the request to continue to the next middleware in line
+})
+app.use('/add-product ',(req ,res , next)=>{
+    console.log('In another the middleware');
+    // send allows different type in response and content-type automatically  
+    res.send('');
+
+})
+
+app.get('/product',(req ,res , next)=>{
+    console.log(req.body);
+    res.redirect('/');
+
+})
+
+
+const server = http.createServer(app);
+server.listen(3000);
+
+-------------------------------------------------
+> npm start
+//////////////////////////////////////////////////////////////////////
+//   065 - Using express Router
+//  Replace code to  different files routes
+////////////////////////////////
+# create folder routes > admin.js , shop.js
+admin.js
+------------
+const express = require('express');
+// many express app can  export router and can use , get ,post
+const router = express.Router();
+
+app.get('/add-product ',(req ,res , next)=>{
+    console.log('In another the middleware');
+    // send allows different type in response and content-type automatically  
+    res.send('');
+
+})
+
+app.post('/product',(req ,res , next)=>{
+    console.log(req.body);
+    res.redirect('/');
+
+})
+
+module.exports = router
+----------------------------
+# shop.js
+------------
+const express = require('express');
+const router = express.Router();
+
+
+// Adding middleware
+router.get('/' , (req ,res , next)=>{
+    console.log('In the middleware');
+})
+
+
+module.exports = router;
+
+
+
+----------------------------
+# app.js
+------------
+const express = require('express');
+const bodyParser = require('body-parser');
+const adminRouter = require('./router/admin');
+const shopRouter = require('./router/shop');
+
+const  app =  express();
+
+// using parser incoming request body 
+app.use(bodyParser.urlencoded())
+//  to set valid middleware
+app.use(adminRouter);
+app.use(shopRouter);
+
+app.use((req ,res, next) =>{
+    res.status(404).send('<h1> Page not found </h1>');
+})
+app.listen(3000);
+//////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////
+
+# create View folder > shop.html & add-product.html
+# add-product.html
+-------------------
+header > nav >  ul > li > a > shop
+header > nav >  ul > li > a > AddProduct
+
+form >
+input > title 
+button 
+-----------------------------------------
+# shop.js
+------------
+const path  =  require('path');
+const express = require('express');
+const router = express.Router();
+
+
+// Adding middleware
+router.get('/' , (req ,res , next)=>{
+    // up in the shop.js file to  
+    res.sendFile(path.join(__dirname,'../' ,'views' ,'shop.html')); '/user/products' or '\user\products' 
+})
+
+
+module.exports = router;
+--------------------------------------------------------
+
+path.js
+-----
+path.dir
