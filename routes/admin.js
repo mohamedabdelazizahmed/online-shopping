@@ -18,4 +18,6 @@ router.post('/add-product', adminController.postAddProduct);
 // /admin/Edit-product => GET
 router.get('/edit-product/:productId', adminController.getEditProduct);
 
+// /admin/Edit-product => POST
+router.post('/edit-product', adminController.postEditProduct);
 module.exports = router;
