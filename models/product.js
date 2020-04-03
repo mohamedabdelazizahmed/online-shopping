@@ -39,6 +39,11 @@ module.exports = class Product {
     getProductsFromFile(cb);
   }
 
+  /**
+   * Get Detail For product 
+   * @param {string} id 
+   * @param {*} cb callback fun run after get product by using id 
+   */
   static findById(id,cb){
     getProductsFromFile((products) => {
       const product  = products.find(p => p.id === id);
