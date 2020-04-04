@@ -1,13 +1,14 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
+const Cart = require('./cart');
 
 const p = path.join(
   path.dirname(process.mainModule.filename),
-  'data',
-  'products.json'
+  "data",
+  "products.json"
 );
 
-const getProductsFromFile = cb => {
+const getProductsFromFile = (cb) => {
   fs.readFile(p, (err, fileContent) => {
     if (err) {
       cb([]);
@@ -18,7 +19,7 @@ const getProductsFromFile = cb => {
 };
 
 module.exports = class Product {
-  constructor(id ,title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
     this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
@@ -27,22 +28,23 @@ module.exports = class Product {
   }
 
   save() {
-    getProductsFromFile(products => {
+    getProductsFromFile((products) => {
       if (this.id) {
-        const existingProductIndex = products.findIndex(prod => prod.id === this.id);
-        const updatedProjects = [...products];
-        updatedProjects[existingProductIndex] = this ;
-        fs.writeFile(p, JSON.stringify(updatedProjects), err => {
+        const existingProductIndex = products.findIndex(
+          (prod) => prod.id === this.id
+        );
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
           console.log(err);
         });
-      }else{
-        this.id= Math.random().toString();
+      } else {
+        this.id = Math.random().toString();
         products.push(this);
-        fs.writeFile(p, JSON.stringify(products), err => {
+        fs.writeFile(p, JSON.stringify(products), (err) => {
           console.log(err);
         });
       }
-
     });
   }
 
@@ -51,14 +53,27 @@ module.exports = class Product {
   }
 
   /**
-   * Get Detail For product 
-   * @param {string} id 
-   * @param {*} cb callback fun run after get product by using id 
+   * Get Detail For product
+   * @param {string} id
+   * @param {*} cb callback fun run after get product by using id
    */
-  static findById(id,cb){
+  static findById(id, cb) {
     getProductsFromFile((products) => {
-      const product  = products.find(p => p.id === id);
+      const product = products.find((p) => p.id === id);
       cb(product);
+    });
+  }
+
+  static deleteById(id) {
+    getProductsFromFile((products) => {
+      const product = products.find(prod => prod.id === id);
+      const updatedProducts = products.filter((prod) => prod.id !== id);
+      fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+        console.log(err);
+        if (!err) {          
+          Cart.deleteProduct(id, product.price);
+        }
+      });
     });
   }
 };
