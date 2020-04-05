@@ -29,7 +29,17 @@ module.exports = class Product {
   }
 
   static fetchAll() {
-    return db.execute('SELECT * FROM products');
+    return db.execute("SELECT * FROM products");
+  }
+  static findById(id){
+    return db.execute("SELECT * FROM products WHERE products.id = ?",[id]);
+
+  }
+  save() {
+    return db.execute(
+      "INSERT INTO products (title,price,imageUrl,description) VALUES (? ,? ,? ,? )",
+      [this.title, this.price, this.imageUrl, this.description]
+    );
   }
 
   /////////////////////////////////////   OPERATION USING FILE ////////////////////////////////////////////
