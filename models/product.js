@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-const Cart = require('./cart');
+const Cart = require("./cart");
+const db = require("../util/database");
 
 const p = path.join(
   path.dirname(process.mainModule.filename),
@@ -27,7 +28,12 @@ module.exports = class Product {
     this.price = price;
   }
 
-  save() {
+  static fetchAll() {
+    return db.execute('SELECT * FROM products');
+  }
+
+  /////////////////////////////////////   OPERATION USING FILE ////////////////////////////////////////////
+  saveByFile() {
     getProductsFromFile((products) => {
       if (this.id) {
         const existingProductIndex = products.findIndex(
@@ -47,30 +53,27 @@ module.exports = class Product {
       }
     });
   }
-
-  static fetchAll(cb) {
+  static fetchAllByFile(cb) {
     getProductsFromFile(cb);
   }
-
   /**
    * Get Detail For product
    * @param {string} id
    * @param {*} cb callback fun run after get product by using id
    */
-  static findById(id, cb) {
+  static findByIdByFile(id, cb) {
     getProductsFromFile((products) => {
       const product = products.find((p) => p.id === id);
       cb(product);
     });
   }
-
-  static deleteById(id) {
+  static deleteByIdByFile(id) {
     getProductsFromFile((products) => {
-      const product = products.find(prod => prod.id === id);
+      const product = products.find((prod) => prod.id === id);
       const updatedProducts = products.filter((prod) => prod.id !== id);
       fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
         console.log(err);
-        if (!err) {          
+        if (!err) {
           Cart.deleteProduct(id, product.price);
         }
       });

@@ -1,7 +1,22 @@
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 
-exports.getProducts = (req, res, next) => {
+exports.getIndex = (req, res, next) => {
+  Product.fetchAll()
+    .then(([rows,fieldData]) => {
+      res.render("shop/index", {
+        prods: rows,
+        pageTitle: "Shop",
+        path: "/",
+      });
+    })
+    .catch();
+
+};
+
+////////////////////////////////////////////////// controller by File //////////////////////////////////////
+
+exports.getProductsByFile = (req, res, next) => {
   Product.fetchAll((products) => {
     res.render("shop/product-list", {
       prods: products,
@@ -11,7 +26,7 @@ exports.getProducts = (req, res, next) => {
   });
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProductByFile = (req, res, next) => {
   const prodId = req.params.productId;
   console.log(prodId);
   Product.findById(prodId, (product) => {
@@ -24,7 +39,7 @@ exports.getProduct = (req, res, next) => {
   });
 };
 
-exports.getIndex = (req, res, next) => {
+exports.getIndexByFile = (req, res, next) => {
   Product.fetchAll((products) => {
     res.render("shop/index", {
       prods: products,
@@ -34,26 +49,28 @@ exports.getIndex = (req, res, next) => {
   });
 };
 
-exports.getCart = (req, res, next) => {
+exports.getCartByFile = (req, res, next) => {
   Cart.getCart((cart) => {
     Product.fetchAll((products) => {
       const cartProducts = [];
       for (const product of products) {
-        const cartProductData =cart.products.find((prod) => prod.id === product.id);
+        const cartProductData = cart.products.find(
+          (prod) => prod.id === product.id
+        );
         if (cartProductData) {
-          cartProducts.push({productData: product, qty:cartProductData.qty});
+          cartProducts.push({ productData: product, qty: cartProductData.qty });
         }
       }
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
-        products:cartProducts
+        products: cartProducts,
       });
     });
   });
 };
 
-exports.postCart = (req, res, next) => {
+exports.postCartByFile = (req, res, next) => {
   console.log("Hello Post Cart");
   const prodId = req.body.productId;
   console.log(prodId);
@@ -67,11 +84,11 @@ exports.postCart = (req, res, next) => {
   // });
 };
 
-exports.postCartDeleteProduct = (req, res, next) => {
+exports.postCartDeleteProductByFile = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, product => {
+  Product.findById(prodId, (product) => {
     Cart.deleteProduct(prodId, product.price);
-    res.redirect('/cart');
+    res.redirect("/cart");
   });
 };
 
