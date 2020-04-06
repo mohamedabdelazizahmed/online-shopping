@@ -7,6 +7,9 @@ const errorController = require("./controllers/error");
 // when using pkg  mysql2
 const db = require("./util/database");
 const sequelize = require("./util/database");
+// Define Models To make Relation
+const Product = require('./models/product');
+const User = require('./models/user');
 
 const app = express();
 
@@ -33,9 +36,14 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
+
+// in pkg sequelize define Relation User has Many Product
+Product.belongsTo(User,{constraints:true ,onDelete:'CASCADE'});
+User.hasMany(Product);
+
 // in pkg sequelize using sync to convert any model to tables in DB
 sequelize
-  .sync()
+  .sync({force:true}) //{force:true} to override table when when created
   .then((result) => {
     // show the Query in server 
     // console.log(result);
