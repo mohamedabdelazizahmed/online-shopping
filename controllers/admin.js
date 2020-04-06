@@ -28,19 +28,22 @@ exports.postAddProduct = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-
 };
-exports.getEditProduct = (req, res, next) => {
-
-};
-exports.postEditProduct = (req, res, next) => {
-
-};
-exports.postDeleteProduct = (req, res, next) => {
-
-};
+exports.getEditProduct = (req, res, next) => {};
+exports.postEditProduct = (req, res, next) => {};
+exports.postDeleteProduct = (req, res, next) => {};
 exports.getProducts = (req, res, next) => {
-
+  Product.findAll()
+    .then((products) => {
+      res.render("admin/products", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 //////////////////////////////////// MySql2 pkg Handling /////////////////
 exports.getAddProductMySql2 = (req, res, next) => {

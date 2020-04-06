@@ -11,7 +11,7 @@ exports.getProducts = (req, res, next) => {
         path: "/products",
       });
     })
-    .catch(err=>{
+    .catch((err) => {
       console.log(err);
     });
 };
@@ -25,9 +25,39 @@ exports.getIndex = (req, res, next) => {
         path: "/",
       });
     })
-    .catch(err=>{
+    .catch((err) => {
       console.log(err);
     });
+};
+
+exports.getProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  console.log(prodId);
+  Product.findByPk(prodId)
+    .then((product) => {
+      console.log(product);
+      res.render("shop/product-detail", {
+        product: product,
+        pageTitle: product.title,
+        path: "/products",
+      });
+    })
+    .catch((err) => {});
+};
+
+exports.getProductByFindAll = (req, res, next) => {
+  const prodId = req.params.productId;
+  console.log(prodId);
+  // using where in findAll
+  Product.findAll({ where: { id: prodId } })
+    .then((products) => {
+      res.render("shop/product-detail", {
+        product: products[0],
+        pageTitle: products[0].title,
+        path: "/products",
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 //////////////////////// MySql2 pkg Handling //////////////////
@@ -55,7 +85,7 @@ exports.getIndexMysql2 = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProductMySql2 = (req, res, next) => {
   const prodId = req.params.productId;
   console.log(prodId);
   Product.findById(prodId)
