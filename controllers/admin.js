@@ -1,5 +1,4 @@
 const Product = require("../models/product");
-
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
@@ -10,8 +9,53 @@ exports.getAddProduct = (req, res, next) => {
     // activeAddProduct: true
   });
 };
-
 exports.postAddProduct = (req, res, next) => {
+  const title = req.body.title;
+  const imageUrl = req.body.imageUrl;
+  const price = req.body.price;
+  const description = req.body.description;
+  // Saved using pkg sequelize by create fun also have build fun create manually
+  Product.create({
+    id: id,
+    title: title,
+    price: price,
+    imageUrl: imageUrl,
+    description: description,
+  })
+    .then((result) => {
+      console.log(result);
+      res.redirect("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+};
+exports.getEditProduct = (req, res, next) => {
+
+};
+exports.postEditProduct = (req, res, next) => {
+
+};
+exports.postDeleteProduct = (req, res, next) => {
+
+};
+exports.getProducts = (req, res, next) => {
+
+};
+//////////////////////////////////// MySql2 pkg Handling /////////////////
+exports.getAddProductMySql2 = (req, res, next) => {
+  res.render("admin/edit-product", {
+    pageTitle: "Add Product",
+    path: "/admin/add-product",
+    editing: false,
+    // formsCSS: true,
+    // productCSS: true,
+    // activeAddProduct: true
+  });
+};
+
+exports.postAddProductMySql2 = (req, res, next) => {
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
@@ -25,7 +69,7 @@ exports.postAddProduct = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.getEditProduct = (req, res, next) => {
+exports.getEditProductMySql2 = (req, res, next) => {
   const editMode = req.query.edit;
   if (editMode != "true") {
     res.redirect("/");
@@ -44,7 +88,7 @@ exports.getEditProduct = (req, res, next) => {
   });
 };
 
-exports.postEditProduct = (req, res, next) => {
+exports.postEditProductMySql2 = (req, res, next) => {
   const prodId = req.body.productId;
   const updateTitle = req.body.title;
   const updatePrice = req.body.price;
@@ -61,12 +105,12 @@ exports.postEditProduct = (req, res, next) => {
   res.redirect("/admin/products");
 };
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.postDeleteProductMySql2 = (req, res, next) => {
   const prodId = req.body.productId;
   Product.deleteById(prodId);
   res.redirect("/admin/products");
 };
-exports.getProducts = (req, res, next) => {
+exports.getProductsMySql2 = (req, res, next) => {
   Product.fetchAll((products) => {
     res.render("admin/products", {
       prods: products,
