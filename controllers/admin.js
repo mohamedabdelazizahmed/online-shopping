@@ -22,8 +22,9 @@ exports.postAddProduct = (req, res, next) => {
     description: description,
   })
     .then((result) => {
+      console.log("CREATED PRODUCT ...")
       console.log(result);
-      res.redirect("/");
+      res.redirect("/admin/products");
     })
     .catch((err) => {
       console.log(err);
@@ -61,17 +62,28 @@ exports.postEditProduct = (req, res, next) => {
       product.price = updatePrice;
       product.imageUrl = updateImageUrl;
       product.description = updateDescription;
-      // save in sequelize to save data backed in db 
+      // save in sequelize to save data backed in db
       return product.save();
     })
-    .then(result => {
+    .then((result) => {
       console.log("UPDATED PRODUCT");
       res.redirect("/admin/products");
     })
-    .catch(err => console.log(err));
-  
+    .catch((err) => console.log(err));
 };
-exports.postDeleteProduct = (req, res, next) => {};
+exports.postDeleteProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  // sequelize you can use destroy({condition})
+  Product.findByPk(prodId)
+    .then((product) => {
+      return product.destroy();
+    })
+    .then((result) => {
+      console.log("DESTROYED PRODUCT");
+      res.redirect("/admin/products");
+    })
+    .catch((err) => console.log(err));
+};
 exports.getProducts = (req, res, next) => {
   Product.findAll()
     .then((products) => {
