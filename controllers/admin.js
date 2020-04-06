@@ -16,7 +16,6 @@ exports.postAddProduct = (req, res, next) => {
   const description = req.body.description;
   // Saved using pkg sequelize by create fun also have build fun create manually
   Product.create({
-    id: id,
     title: title,
     price: price,
     imageUrl: imageUrl,

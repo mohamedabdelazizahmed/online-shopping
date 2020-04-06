@@ -1,7 +1,37 @@
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 
+///////////////////////// sequelize //////////////////
 exports.getProducts = (req, res, next) => {
+  Product.findAll()
+    .then((products) => {
+      res.render("shop/product-list", {
+        prods: products,
+        pageTitle: "All Products",
+        path: "/products",
+      });
+    })
+    .catch(err=>{
+      console.log(err);
+    });
+};
+
+exports.getIndex = (req, res, next) => {
+  Product.findAll()
+    .then((products) => {
+      res.render("shop/index", {
+        prods: products,
+        pageTitle: "Shop",
+        path: "/",
+      });
+    })
+    .catch(err=>{
+      console.log(err);
+    });
+};
+
+//////////////////////// MySql2 pkg Handling //////////////////
+exports.getProductsMySql2 = (req, res, next) => {
   Product.fetchAll()
     .then(([rows, fieldData]) => {
       res.render("shop/product-list", {
@@ -13,7 +43,7 @@ exports.getProducts = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.getIndex = (req, res, next) => {
+exports.getIndexMysql2 = (req, res, next) => {
   Product.fetchAll()
     .then(([rows, fieldData]) => {
       res.render("shop/index", {
