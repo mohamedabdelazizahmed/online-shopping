@@ -29,8 +29,48 @@ exports.postAddProduct = (req, res, next) => {
       console.log(err);
     });
 };
-exports.getEditProduct = (req, res, next) => {};
-exports.postEditProduct = (req, res, next) => {};
+exports.getEditProduct = (req, res, next) => {
+  const editMode = req.query.edit;
+  if (editMode != "true") {
+    res.redirect("/");
+  }
+  const prodId = req.params.productId;
+  Product.findByPk(prodId)
+    .then((product) => {
+      if (!product) {
+        return res.redirect("/");
+      }
+      res.render("admin/edit-product", {
+        pageTitle: "Add Product",
+        path: "/admin/add-product",
+        editing: editMode,
+        product: product,
+      });
+    })
+    .catch((err) => console.log(err));
+};
+exports.postEditProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  const updateTitle = req.body.title;
+  const updatePrice = req.body.price;
+  const updateImageUrl = req.body.imageUrl;
+  const updateDescription = req.body.description;
+  Product.findByPk(prodId)
+    .then((product) => {
+      product.title = updateTitle;
+      product.price = updatePrice;
+      product.imageUrl = updateImageUrl;
+      product.description = updateDescription;
+      // save in sequelize to save data backed in db 
+      return product.save();
+    })
+    .then(result => {
+      console.log("UPDATED PRODUCT");
+      res.redirect("/admin/products");
+    })
+    .catch(err => console.log(err));
+  
+};
 exports.postDeleteProduct = (req, res, next) => {};
 exports.getProducts = (req, res, next) => {
   Product.findAll()
