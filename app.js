@@ -52,7 +52,7 @@ User.hasMany(Product);
 
 // in pkg sequelize using sync to convert any model to tables in DB
 sequelize
-  .sync() //{force:true} to override table when when created
+  .sync() //sync({force:true}) to override table when when created
   .then((result) => {
     // show the Query in server
     // console.log(result);
@@ -65,7 +65,7 @@ sequelize
     return user;
   })
   .then((user) => {
-    console.log(user);
+    // console.log(user);
     app.listen(3000);
   })
   .catch((err) => console.log(err));
