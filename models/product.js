@@ -11,13 +11,27 @@ class Product {
   save() {
     // connection db to interact with db
     const db = getDb();
-    db.collection("products")
+    return db
+      .collection("products")
       .insertOne(this) // insertOne fun mongodb take js object like insertOne({book:'',price:12})
       .then((result) => {
-        console.log("PRODUCT SAVED");
+        console.log("PRODUCT SAVING");
         console.log(result);
       })
       .catch((err) => console.log(err));
+  }
+  static fetchAll() {
+    const db = getDb();
+    return db
+      .collection("products")
+      .find()
+      .toArray()
+      .then((products) => {
+        console.log("Fetching all Products");
+        // console.log(result);
+        return products;
+      })
+      .catch((err) => {console.log(err)});
   }
 }
 module.exports = Product;

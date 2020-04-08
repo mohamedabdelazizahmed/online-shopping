@@ -1,12 +1,12 @@
 // after npm install --save mongodb
-const mongodb = require("mongodb");
+const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 
 let _db;
 const mongoConnect = (callback) => {
-  MongoClient.connect(
-    "mongodb+srv://mohamedabdelaziz:01282434860m@node-complete-fced0.mongodb.net/shop?retryWrites=true&w=majority"
-  )
+  let uri ="mongodb+srv://mohamedabdelaziz:01282434860m@node-complete-fced0.mongodb.net/shop?retryWrites=true&w=majority";
+
+  MongoClient.connect(uri , { useNewUrlParser: true ,useUnifiedTopology: true })
     .then((client) => {
     //   console.log(result);
       console.log("CONNECTED MONGODB ATLAS");
