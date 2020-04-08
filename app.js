@@ -22,8 +22,9 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect((client) => {
+mongoConnect(() => {
   console.log("mongoConnect");
-  console.log(client);
+  // not return client after create getdb function 
+  // console.log(client);
   app.listen(3000);
 });

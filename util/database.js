@@ -2,17 +2,32 @@
 const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
 
+let _db;
 const mongoConnect = (callback) => {
   MongoClient.connect(
-    "mongodb+srv://mohamedabdelaziz:01282434860m@node-complete-fced0.mongodb.net/test?retryWrites=true&w=majority"
+    "mongodb+srv://mohamedabdelaziz:01282434860m@node-complete-fced0.mongodb.net/shop?retryWrites=true&w=majority"
   )
-    .then((result) => {
+    .then((client) => {
     //   console.log(result);
       console.log("CONNECTED MONGODB ATLAS");
-      callback(result);
+      _db = client.db(); 
+      // callback(result);
+      callback();
     })
     .catch((err) => {
       console.log(err);
     });
 };
-module.exports = mongoConnect ;
+/**
+ *  checking database found 
+ * @return _db object database
+ */
+const getDb = () => {
+  if (_db) {
+    return _db;
+  }
+  throw 'No database found' ;
+}
+// module.exports = mongoConnect ;
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;
