@@ -1,24 +1,36 @@
+const mongodb = require("mongodb");
 const getDb = require("../util/database").getDb;
 
 class Product {
-  constructor(title, price, description, imageUrl) {
+  constructor(title, price, description, imageUrl, id) {
     this.title = title;
     this.price = price;
     this.description = description;
     this.imageUrl = imageUrl;
+    this._id = new mongodb.ObjectId(id);
   }
 
   save() {
     // connection db to interact with db
     const db = getDb();
-    return db
-      .collection("products")
-      .insertOne(this) // insertOne fun mongodb take js object like insertOne({book:'',price:12})
+    let dbOp;
+    if (this._id) {
+      // Update the product
+      console.log("UPDATING THE PRODUCT ");
+      dbOp = db
+        .collection("products")
+        .updateOne({ _id: this._id }, { $set: this });
+    } else {
+      console.log("INSERTING THE PRODUCT");
+      dbOp = db.collection("products").insertOne(this); // insertOne fun mongodb take js object like insertOne({book:'',price:12})
+    }
+    return dbOp
       .then((result) => {
-        console.log("PRODUCT SAVING");
         console.log(result);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
   }
   static fetchAll() {
     const db = getDb();
@@ -39,13 +51,26 @@ class Product {
     const db = getDb();
     return db
       .collection("products")
-      .find({ _id: prodId })
+      .find({ _id: new mongodb.ObjectId(prodId) })
       .next()
       .then((product) => {
         console.log("FINDING BY ID");
         return product;
       })
-      .catch(err=>{
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  static deleteById(prodId) {
+    const db = getDb();
+    return db
+      .collection("products")
+      .deleteOne({ _id: new mongodb.ObjectId(prodId) })
+      .then((result) => {
+        console.log("Deleted");
+      })
+      .catch((err) => {
         console.log(err);
       });
   }
