@@ -31,7 +31,23 @@ class Product {
         // console.log(result);
         return products;
       })
-      .catch((err) => {console.log(err)});
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  static findById(prodId) {
+    const db = getDb();
+    return db
+      .collection("products")
+      .find({ _id: prodId })
+      .next()
+      .then((product) => {
+        console.log("FINDING BY ID");
+        return product;
+      })
+      .catch(err=>{
+        console.log(err);
+      });
   }
 }
 module.exports = Product;
