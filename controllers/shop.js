@@ -58,17 +58,23 @@ exports.getCart = (req, res, next) => {
 };
 
 exports.postCart = (req, res, next) => {
-  console.log("Hello Post Cart");
+  console.log("Add Product to card user");
   const prodId = req.body.productId;
   console.log(prodId);
-  Product.findById(prodId, (product) => {
-    Cart.addProduct(prodId, product.price);
+  Product.findById(prodId)
+  .then((product) => {
+    console.log("... Product ...");
+    console.log(product);
+    return req.user.addToCart(product);
+  })
+  .then(result =>{
+    // console.log(result);
   });
-  res.redirect("/cart");
-  // res.render("shop/cart", {
-  //   path: "/cart",
-  //   pageTitle: "Your Cart"
-  // });
+  // res.redirect("/cart");
+  // // res.render("shop/cart", {
+  // //   path: "/cart",
+  // //   pageTitle: "Your Cart"
+  // // });
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
