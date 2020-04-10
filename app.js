@@ -26,7 +26,7 @@ app.use((req, res, next) => {
       // console.log(user);
       // req.user = user;
       //replace the user to real object to interact
-      req.user = new User(user.username, user.email, user.cart, user._id);
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch((err) => console.log(err));
