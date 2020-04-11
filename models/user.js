@@ -111,5 +111,23 @@ class User {
         { $set: { cart: { items: [...updatedCartItems] } } }
       );
   }
+
+  addOrder() {
+    console.log('ADD Order');
+    const db = getDb();
+    return db
+      .collection("orders")
+      .insertOne(this.cart)
+      .then((result) => {
+        //empty cart...
+        this.cart = { items: [] };
+        return db
+          .collection("users")
+          .updateOne(
+            { _id: new ObjectId(this._id) },
+            { $set: { cart: { items: [] } } }
+          );
+      });
+  }
 }
 module.exports = User;
