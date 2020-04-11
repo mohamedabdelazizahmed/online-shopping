@@ -36,25 +36,32 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-
+  req.user.getCart().then((products) => {
+    console.log("... getCart ...");
+    console.log(products.length);
+    res.render('shop/cart' , {
+      path:'/cart',
+      pageTitle:'Your Cart',
+      products:products
+    })
+  }).catch(err => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {
   console.log("... postCart ...");
   const prodId = req.body.productId;
   Product.findById(prodId)
-    .then(product => {
+    .then((product) => {
       return req.user.addToCart(product);
     })
-    .then(result => {
+    .then((result) => {
       // console.log(result);
-      res.redirect('/cart');
+      res.redirect("/cart");
     });
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-
 };
 
 exports.getOrders = (req, res, next) => {
