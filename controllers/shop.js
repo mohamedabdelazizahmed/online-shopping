@@ -2,13 +2,19 @@ const Product = require("../models/product");
 const Cart = require("../models/cart");
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render("shop/product-list", {
-      prods: products,
-      pageTitle: "All Products",
-      path: "/products",
-    });
-  });
+  /**
+   * find() in mongoose not return the cursor it's give product direct
+   *  find().cursor() it's give cursor you call call next() || each
+   * */
+  Product.find()
+    .then((products) => {
+      res.render("shop/product-list", {
+        prods: products,
+        pageTitle: "All Products",
+        path: "/products",
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getProduct = (req, res, next) => {
@@ -25,13 +31,15 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render("shop/index", {
-      prods: products,
-      pageTitle: "Shop",
-      path: "/",
-    });
-  });
+  Product.find()
+    .then((products) => {
+      res.render("shop/index", {
+        prods: products,
+        pageTitle: "Shop",
+        path: "/",
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getCart = (req, res, next) => {
@@ -39,15 +47,17 @@ exports.getCart = (req, res, next) => {
     Product.fetchAll((products) => {
       const cartProducts = [];
       for (const product of products) {
-        const cartProductData =cart.products.find((prod) => prod.id === product.id);
+        const cartProductData = cart.products.find(
+          (prod) => prod.id === product.id
+        );
         if (cartProductData) {
-          cartProducts.push({productData: product, qty:cartProductData.qty});
+          cartProducts.push({ productData: product, qty: cartProductData.qty });
         }
       }
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
-        products:cartProducts
+        products: cartProducts,
       });
     });
   });
@@ -69,9 +79,9 @@ exports.postCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, product => {
+  Product.findById(prodId, (product) => {
     Cart.deleteProduct(prodId, product.price);
-    res.redirect('/cart');
+    res.redirect("/cart");
   });
 };
 
