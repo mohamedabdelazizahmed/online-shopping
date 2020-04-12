@@ -20,6 +20,13 @@ productSchema = new Schema({
     type: String,
     required: true,
   },
+  /** Relation using mongoose */
+  // for every product assigned to user 
+  userId:{
+    type:Schema.Types.ObjectId,
+    ref:'User', //name of model,
+    required:true
+  }
 });
 
 module.exports = mongoose.model("Product", productSchema);
