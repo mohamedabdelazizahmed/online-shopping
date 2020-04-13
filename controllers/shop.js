@@ -44,10 +44,12 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .populate('cart.items.productId')
-    .execPopulate()
+    .populate('cart.items.productId') // fetch data in cart.items.productId
+    .execPopulate() //have using execPopulate to using promise and using  then()
     .then(user => {
       const products = user.cart.items;
+      console.log('FETCHING PRODUCT INSIDE  SHOPPING CART');
+      console.log(products);
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',

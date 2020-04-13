@@ -36,7 +36,7 @@ userSchema.methods.addToCart = function(product) {
   });
   let newQuantity = 1;
   const updatedCartItems = [...this.cart.items];
-
+  // checking if product already in cart
   if (cartProductIndex >= 0) {
     newQuantity = this.cart.items[cartProductIndex].quantity + 1;
     updatedCartItems[cartProductIndex].quantity = newQuantity;
@@ -49,10 +49,10 @@ userSchema.methods.addToCart = function(product) {
   const updatedCart = {
     items: updatedCartItems
   };
-  // different with mongodb 
+  // different with mongodb not updated manually 
   this.cart = updatedCart;
   return this.save(); // updated cart
 };
-
+ 
 
 module.exports = mongoose.model("User", userSchema);
