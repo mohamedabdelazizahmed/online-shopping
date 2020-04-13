@@ -89,7 +89,10 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 exports.getProducts = (req, res, next) => {
   Product.find()
+    //.select('title price imageUrl -_id')   //which field select or unselect
+    // .populate('userId','name')    // fetch relation data like user using userId
     .then((products) => {
+      console.log(products);
       res.render("admin/products", {
         prods: products,
         pageTitle: "Admin Products",
