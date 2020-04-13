@@ -20,14 +20,16 @@ exports.getProducts = (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
   console.log(prodId);
-  Product.findById(prodId).then((product) => {
-    console.log(product);
-    res.render("shop/product-detail", {
-      product: product,
-      pageTitle: product.title,
-      path: "/products",
-    });
-  }).catch(err => console.log(err));
+  Product.findById(prodId)
+    .then((product) => {
+      console.log(product);
+      res.render("shop/product-detail", {
+        product: product,
+        pageTitle: product.title,
+        path: "/products",
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getIndex = (req, res, next) => {
@@ -44,38 +46,40 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .populate('cart.items.productId') // fetch data in cart.items.productId
+    .populate("cart.items.productId") // fetch data in cart.items.productId
     .execPopulate() //have using execPopulate to using promise and using  then()
-    .then(user => {
+    .then((user) => {
       const products = user.cart.items;
-      console.log('FETCHING PRODUCT INSIDE  SHOPPING CART');
+      console.log("FETCHING PRODUCT INSIDE  SHOPPING CART");
       console.log(products);
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: products
+      res.render("shop/cart", {
+        path: "/cart",
+        pageTitle: "Your Cart",
+        products: products,
       });
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
-    .then(product => {
+    .then((product) => {
       return req.user.addToCart(product);
     })
-    .then(result => {
+    .then((result) => {
       console.log(result);
-      res.redirect('/cart');
+      res.redirect("/cart");
     });
 };
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, (product) => {
-    Cart.deleteProduct(prodId, product.price);
-    res.redirect("/cart");
-  });
+  req.user
+    .removeFromCart(prodId)
+    .then((result) => {
+        res.redirect("/cart");
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getOrders = (req, res, next) => {
