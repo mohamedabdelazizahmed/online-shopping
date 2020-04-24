@@ -4,6 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 // import mongoose to connect to database
 const mongoose = require("mongoose");
+//initialize session when app is running "npm install --save express-session"
+const session = require("express-session");
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -17,9 +19,11 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+// secret =>should be long txt , resave => mean session not save for every request 
+// saveUninitialized => ensure that no session  save for request 
+app.use(session({ secret: "my secret", resave: false, saveUninitialized:false })); 
 
 app.use((req, res, next) => {
   User.findById("5e93673dd9bf1e342cd08770")
@@ -34,7 +38,6 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 //auth routes
 app.use(authRoutes);
-
 
 app.use(errorController.get404);
 
