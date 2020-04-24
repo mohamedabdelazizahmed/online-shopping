@@ -1,10 +1,10 @@
 exports.getLogin = (req, res, next) => {
   // we can manipulated data in the browser 
-  const isLoggedIn = req
-    .get('Cookie')
-    .split(';')[1]
-    .trim()
-    .split('=')[1] == 'true';
+  // const isLoggedIn = req
+  //   .get('Cookie')
+  //   .split(';')[1]
+  //   .trim()
+  //   .split('=')[1] == 'true';
   console.log("Login Page Render");
   res.render("auth/login", {
     path: "/login",
@@ -26,7 +26,7 @@ exports.postLogin = (req, res, next) => {
    * secure configuration  mean we cant access using js  not showing because using https
    * httpOnly  configuration mean send for every request but can't access it js browser 
    */
-  res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly');
+  // res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly');
 
   res.redirect("/");
 };
