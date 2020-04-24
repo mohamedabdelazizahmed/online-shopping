@@ -23,8 +23,10 @@ exports.postLogin = (req, res, next) => {
    * The  cookie attached for every request
    * The data  send for every request
    *  open DEVTools in chrome > Application > Cookies
+   * secure configuration  mean we cant access using js  not showing because using https
+   * httpOnly  configuration mean send for every request but can't access it js browser 
    */
-  res.setHeader('Set-Cookie', 'loggedIn=true');
+  res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly');
 
   res.redirect("/");
 };
