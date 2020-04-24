@@ -1,10 +1,10 @@
 exports.getLogin = (req, res, next) => {
-
-  // const isLoggedIn = req
-  //   .get('Cookie')
-  //   .split(';')[1]
-  //   .trim()
-  //   .split('=')[1];
+  // we can manipulated data in the browser 
+  const isLoggedIn = req
+    .get('Cookie')
+    .split(';')[1]
+    .trim()
+    .split('=')[1] == 'true';
   console.log("Login Page Render");
   res.render("auth/login", {
     path: "/login",
