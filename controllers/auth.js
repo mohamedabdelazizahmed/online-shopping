@@ -28,5 +28,11 @@ exports.postLogin = (req, res, next) => {
    */
   // res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly');
 
+///////////////////////////////////////////////////////////////////////////
+  /**
+   * after added isLoggedIn in se ssion show cookie in browser
+   * connect.sid cookie session cookie 
+   */
+  req.session.isLoggedIn = true ;
   res.redirect("/");
 };

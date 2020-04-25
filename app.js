@@ -21,9 +21,11 @@ const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-// secret =>should be long txt , resave => mean session not save for every request 
-// saveUninitialized => ensure that no session  save for request 
-app.use(session({ secret: "my secret", resave: false, saveUninitialized:false })); 
+// secret =>should be long txt , resave => mean session not save for every request
+// saveUninitialized => ensure that no session  save for request
+app.use(
+  session({ secret: "my secret", resave: false, saveUninitialized: false })
+);
 
 app.use((req, res, next) => {
   User.findById("5e93673dd9bf1e342cd08770")
