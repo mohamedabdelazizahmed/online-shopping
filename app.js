@@ -6,11 +6,21 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 //initialize session when app is running "npm install --save express-session"
 const session = require("express-session");
+// to store session in mongodb using package "npm install --save connect-mongodb-session"
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
+const MONGODB_URI =
+  "mongodb+srv://mohamedabdelaziz:01282434860m@node-complete-fced0.mongodb.net/shop-v2?retryWrites=true&w=majority";
+
 const app = express();
+
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -24,7 +34,12 @@ app.use(express.static(path.join(__dirname, "public")));
 // secret =>should be long txt , resave => mean session not save for every request
 // saveUninitialized => ensure that no session  save for request
 app.use(
-  session({ secret: "my secret", resave: false, saveUninitialized: false })
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
 );
 
 app.use((req, res, next) => {
@@ -44,10 +59,7 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(
-    "mongodb+srv://mohamedabdelaziz:01282434860m@node-complete-fced0.mongodb.net/shop-v2?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => {
     console.log("... Connect To Mongodb via Mongoose ...");
     console.log("http://localhost:3000");
