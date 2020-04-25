@@ -33,6 +33,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 // secret =>should be long txt , resave => mean session not save for every request
 // saveUninitialized => ensure that no session  save for request
+// Middleware set automatically cookie  for you
 app.use(
   session({
     secret: "my secret",
