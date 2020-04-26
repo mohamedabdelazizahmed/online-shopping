@@ -33,6 +33,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 // secret =>should be long txt , resave => mean session not save for every request
 // saveUninitialized => ensure that no session  save for request
+// cookie :{expires} you can configure it 
 // Middleware set automatically cookie  for you
 app.use(
   session({
@@ -43,12 +44,20 @@ app.use(
   })
 );
 
+
+
+/**
+ *  Mongoose fetch full user object no data in database 
+ * resolve the user data in session not full user object like mongoose
+ */
 app.use((req, res, next) => {
+  // resolve when logout  for every request "req.session.user._id NOT FOUND"
   if (!req.session.user) {
     return next();
   }
+  // get user based the data store user in session
   User.findById(req.session.user._id)
-    .then(user => {
+    .then(user => { 
       req.user = user;
       next();
     })

@@ -1,3 +1,4 @@
+const User  = require('../models/user');
 exports.getLogin = (req, res, next) => {
   // we can manipulated data in the browser
   // const isLoggedIn = req
@@ -13,7 +14,7 @@ exports.getLogin = (req, res, next) => {
   });
 };
 
-exports.postLogin = (req, res, next) => {
+exports.postLogin = (req, res, next) => { 
   /** store information isLoggedIn */
 
   //  req.isLoggedIn = true;
@@ -33,11 +34,17 @@ exports.postLogin = (req, res, next) => {
    * after added isLoggedIn in se session show cookie in browser
    * connect.sid cookie session cookie
    */
-  User.findById('5bab316ce0a7c75f783cb8a8')
-    .then(user => {
+  User.findById('5e93673dd9bf1e342cd08770')
+    .then(user => { 
+      console.log(user);
+      //set isLoggedIn in session
       req.session.isLoggedIn = true;
+      // in session stor data user when logged in session document in database
       req.session.user = user;
-      res.redirect('/');
+      // ensure the session was created to continue
+      req.session.save(err => {
+        res.redirect('/');
+      })
     })
     .catch(err => console.log(err));
 };
