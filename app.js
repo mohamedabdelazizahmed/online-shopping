@@ -75,20 +75,20 @@ mongoose
   .then((result) => {
     console.log("... Connect To Mongodb via Mongoose ...");
     console.log("http://localhost:3000");
-    /** Create User*/
-    User.findOne().then((user) => {
-      if (!user) {
-        console.log("... Create User Demo ...");
-        const user = new User({
-          name: "Mohamed",
-          email: "zizo@test.com",
-          cart: {
-            items: [],
-          },
-        });
-        user.save();
-      }
-    });
+    /** Create User dummy user*/
+    // User.findOne().then((user) => {
+    //   if (!user) {
+    //     console.log("... Create User Demo ...");
+    //     const user = new User({
+    //       name: "Mohamed",
+    //       email: "zizo@test.com",
+    //       cart: {
+    //         items: [],
+    //       },
+    //     });
+    //     user.save();
+    //   }
+    // });
 
     app.listen(3000);
   })

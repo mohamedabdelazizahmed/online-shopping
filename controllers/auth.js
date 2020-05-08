@@ -1,4 +1,4 @@
-const User  = require('../models/user');
+const User = require("../models/user");
 exports.getLogin = (req, res, next) => {
   // we can manipulated data in the browser
   // const isLoggedIn = req
@@ -14,7 +14,7 @@ exports.getLogin = (req, res, next) => {
   });
 };
 
-exports.postLogin = (req, res, next) => { 
+exports.postLogin = (req, res, next) => {
   /** store information isLoggedIn */
 
   //  req.isLoggedIn = true;
@@ -34,19 +34,19 @@ exports.postLogin = (req, res, next) => {
    * after added isLoggedIn in se session show cookie in browser
    * connect.sid cookie session cookie
    */
-  User.findById('5e93673dd9bf1e342cd08770')
-    .then(user => { 
+  User.findById("5e93673dd9bf1e342cd08770")
+    .then((user) => {
       console.log(user);
       //set isLoggedIn in session
       req.session.isLoggedIn = true;
       // in session stor data user when logged in session document in database
       req.session.user = user;
       // ensure the session was created to continue
-      req.session.save(err => {
-        res.redirect('/');
-      })
+      req.session.save((err) => {
+        res.redirect("/");
+      });
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 };
 
 exports.postLogout = (req, res, next) => {
@@ -57,11 +57,31 @@ exports.postLogout = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
-  res.render('auth/signup', {
-    path: '/signup',
-    pageTitle: 'Signup',
-    isAuthenticated: false
+  res.render("auth/signup", {
+    path: "/signup",
+    pageTitle: "Signup",
+    isAuthenticated: false,
   });
 };
 
-exports.postSignup = (req, res, next) => {};
+exports.postSignup = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+  User.findOne({ email: email })
+    .then((userDoc) => {
+      if (userDoc) {
+        return res.redirect("/signup");
+      }
+      const user = new User({
+        email: email,
+        password: password,
+        cart:{items: [] }
+      });
+      return user.save();
+    })
+    .then(result => {
+      res.redirect('/login');
+    })
+    .catch((err) => {});
+};
