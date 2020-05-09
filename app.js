@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 // to store session in mongodb using package "npm install --save connect-mongodb-session"
 const MongoDBStore = require("connect-mongodb-session")(session);
+// npm install --save csurf
+const csrf = require('csurf');
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -22,6 +24,7 @@ const store = new MongoDBStore({
   collection: "sessions",
 });
 
+const csrfProtection  = csrf();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -44,6 +47,7 @@ app.use(
   })
 );
 
+app.use(csrfProtection);
 
 
 /**
