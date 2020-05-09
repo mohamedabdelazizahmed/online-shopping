@@ -36,16 +36,28 @@ exports.postLogin = (req, res, next) => {
    * after added isLoggedIn in se session show cookie in browser
    * connect.sid cookie session cookie
    */
-  User.findById("5e93673dd9bf1e342cd08770")
+
+  const email = req.body.email;
+  const password = req.body.password;
+
+  User.findOne({ email: email })
     .then((user) => {
-      console.log(user);
-      //set isLoggedIn in session
-      req.session.isLoggedIn = true;
-      // in session stor data user when logged in session document in database
-      req.session.user = user;
-      // ensure the session was created to continue
-      req.session.save((err) => {
-        res.redirect("/");
+      if (!user) {
+        return res.redirect("/login");
+      }
+      bcrypt.compare(password, user.password).then((doMatch) => {
+        if (doMatch) {
+          //set isLoggedIn in session
+          req.session.isLoggedIn = true;
+          // in session stor data user when logged in session document in database
+          req.session.user = user;
+          // ensure the session was created to continue
+          return req.session.save((err) => {
+            console.log(err);
+            res.redirect("/");
+          });
+        }
+        res.redirect("/login");
       });
     })
     .catch((err) => console.log(err));
@@ -76,8 +88,7 @@ exports.postSignup = (req, res, next) => {
         return res.redirect("/signup");
       }
       // return promise in pkg bcrypt
-      return bcrypt.hash(password, 12)
-      .then((hashedPassword) => {
+      return bcrypt.hash(password, 12).then((hashedPassword) => {
         const user = new User({
           email: email,
           password: hashedPassword,
