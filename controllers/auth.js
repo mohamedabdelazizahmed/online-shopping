@@ -8,15 +8,13 @@ exports.getLogin = (req, res, next) => {
   //   .split(';')[1]
   //   .trim()
   //   .split('=')[1] == 'true';
-  console.log("Login Page Render");
-  res.render("auth/login", {
-    path: "/login",
-    pageTitle: "Login",
-    isAuthenticated: req.isLoggedIn,
+  res.render('auth/login', {
+    path: '/login',
+    pageTitle: 'Login',
+    errorMessage: req.flash('error')
   });
 };
 
-exports.postLogin = (req, res, next) => {
   /** store information isLoggedIn */
 
   //  req.isLoggedIn = true;
@@ -37,35 +35,39 @@ exports.postLogin = (req, res, next) => {
    * connect.sid cookie session cookie
    */
 
-  const email = req.body.email;
-  const password = req.body.password;
-
-  User.findOne({ email: email })
-    .then((user) => {
-      if (!user) {
-        return res.redirect("/login");
-      }
-      bcrypt.compare(password, user.password).then((doMatch) => {
-        if (doMatch) {
-          //set isLoggedIn in session
-          req.session.isLoggedIn = true;
-          // in session stor data user when logged in session document in database
-          req.session.user = user;
-          // ensure the session was created to continue
-          return req.session.save((err) => {
-            console.log(err);
-            res.redirect("/");
-          });
+  exports.postLogin = (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    User.findOne({ email: email })
+      .then(user => {
+        if (!user) {
+          req.flash('error', 'Invalid email or password.');
+          return res.redirect('/login');
         }
-        res.redirect("/login");
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.redirect('/login');
-    });
-}; 
-
+        bcrypt
+          .compare(password, user.password)
+          .then(doMatch => {
+            if (doMatch) {
+                //set isLoggedIn in session
+                req.session.isLoggedIn = true;
+                // in session stor data user when logged in session document in database
+                req.session.user = user;
+                // ensure the session was created to continue
+                return req.session.save(err => {
+                console.log(err);
+                res.redirect('/');
+              });
+            }
+            res.redirect('/login');
+          })
+          .catch(err => {
+            console.log(err);
+            res.redirect('/login');
+          });
+      })
+      .catch(err => console.log(err));
+};
+  
 exports.postLogout = (req, res, next) => {
   req.session.destroy((err) => {
     console.log(err);

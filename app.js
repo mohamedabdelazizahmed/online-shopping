@@ -10,6 +10,8 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 // npm install --save csurf
 const csrf = require('csurf');
+// npm install --save connect-flash
+const flash = require('connect-flash');
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -49,7 +51,8 @@ app.use(
 
 app.use(csrfProtection);
 
-
+// initialize after session
+app.use(flash());
 /**
  *  Mongoose fetch full user object no data in database 
  * resolve the user data in session not full user object like mongoose
