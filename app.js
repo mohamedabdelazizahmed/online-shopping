@@ -67,6 +67,19 @@ app.use((req, res, next) => {
     })
     .catch(err => console.log(err));
 });
+
+/**
+ *  data included for every view render
+ */
+app.use((req ,res , next) => {
+  //locals it's allow  special field in response
+  res.locals.isAuthenticated = req.session.isLoggedIn ,
+  res.locals.csrfToken = req.csrfToken();
+  next();
+})
+
+
+
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 //auth routes

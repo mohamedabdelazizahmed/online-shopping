@@ -60,8 +60,11 @@ exports.postLogin = (req, res, next) => {
         res.redirect("/login");
       });
     })
-    .catch((err) => console.log(err));
-};
+    .catch((err) => {
+      console.log(err);
+      res.redirect('/login');
+    });
+}; 
 
 exports.postLogout = (req, res, next) => {
   req.session.destroy((err) => {
