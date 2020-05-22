@@ -90,6 +90,7 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email: email })
     .then((userDoc) => {
       if (userDoc) {
+        req.flash('error' , 'Invalid email or password.');
         return res.redirect("/signup");
       }
       // return promise in pkg bcrypt
