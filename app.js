@@ -13,6 +13,10 @@ const csrf = require('csurf');
 // npm install --save connect-flash
 const flash = require('connect-flash');
 
+// npm install --save nodemailer nodemailer-sendgrid-transport
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
+
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
