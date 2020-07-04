@@ -3,7 +3,7 @@ const Product = require("../models/product");
 exports.getAddProduct = (req, res, next) => {
   // working on Route Protection
   if (!req.session.isLoggedIn) {
-    return redirect('/login');
+    return redirect("/login");
   }
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
@@ -27,7 +27,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     description: description,
     imageUrl: imageUrl,
-    userId: req.user._id  // For every product save by certain  user
+    userId: req.user._id, // For every product save by certain  user
   });
   product
     .save()
@@ -69,32 +69,37 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findById(prodId)
     .then((product) => {
+      // Add Authorization
+      if (product.userId.toString() !== req.user._id.toString()) {
+        return res.redirect("/");
+      }
       product.title = updateTitle;
       product.price = updatePrice;
       product.description = updateDescription;
       product.imageUrl = updateImageUrl;
 
-      return product.save();
+      return product.save().then((result) => {
+        console.log("... UPDATED PRODUCT ...");
+        res.redirect("/admin/products");
+      });
     })
-    .then((result) => {
-      console.log("... UPDATED PRODUCT ...");
-      res.redirect("/admin/products");
-    })
+
     .catch((err) => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findOneAndRemove(prodId)
+  // Product.findOneAndRemove(prodId)
+  Product.deleteOne({ _id: prodId, userId: req.user._id })
     .then(() => {
-        console.log("DESTROYED PRODUCT");
-        res.redirect("/admin/products");
+      console.log("DESTROYED PRODUCT");
+      res.redirect("/admin/products");
     })
     .catch((err) => console.log(err));
-
 };
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  // Add Authorization
+  Product.find({ userId: req.user._id })
     //.select('title price imageUrl -_id')   //which field select or unselect
     // .populate('userId','name')    // fetch relation data like user using userId
     .then((products) => {
