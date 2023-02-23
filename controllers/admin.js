@@ -22,6 +22,7 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   console.log(req.user);
+  // when failing in Create Operation :: we must handel this problem in catch 
   const product = new Product({
     title: title,
     price: price,
@@ -35,7 +36,13 @@ exports.postAddProduct = (req, res, next) => {
       console.log("CREATED PRODUCT");
       res.redirect("/admin/products");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      // Solution 1:- we can redirect another page with status 500
+      // Solution 2: create 500 page error 
+      res.redirect('/500');
+      console.log("Error ocurred")
+      console.log(err);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
